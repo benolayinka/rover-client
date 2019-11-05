@@ -39,15 +39,15 @@ function connect() {
     ws.send(JSON.stringify(hello));
   }
 
-  ws.onmessage = function(data) {
+  ws.onmessage = function(e) {
     //data = JSON.parse(json)
-    console.log("received: ", data)
-    if(data.event === "keyUp")
+    console.log("received: ", e.data)
+    if(e.data.event === "keyUp")
     {
       //send stop command
       stopRover()
     }
-    else if(data.event === "keyDown")
+    else if(e.data.event === "keyDown")
     {
       sendRover(data.key)
     }
