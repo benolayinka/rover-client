@@ -27,7 +27,7 @@ const stopRover = function() {
 }
 
 const sendRover = function(apiPath) {
-  http.get('http://' + roverIp + apiPath)
+  http.get('http://' + roverIp + '/' + apiPath)
 }
 
 function connect() {
@@ -40,16 +40,16 @@ function connect() {
   }
 
   ws.onmessage = function(e) {
-    //data = JSON.parse(json)
-    console.log("received: ", e.data)
-    if(e.data.event === "keyUp")
+    d = JSON.parse(e.data)
+    console.log(d.event)
+    if(d.event === "keyUp")
     {
       //send stop command
       stopRover()
     }
-    else if(e.data.event === "keyDown")
+    else if(d.event === "keyDown")
     {
-      sendRover(data.key)
+      sendRover(d.key)
     }
   }
 
