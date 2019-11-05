@@ -47,10 +47,10 @@ ws.on('message', function incoming(json) {
   if(data.event === "keyUp")
   {
     //send stop command
-    http.get(roverIp + '/x');
+    http.get('http://' + roverIp + '/x');
   }
   else if(data.event === "keyDown")
   {
-    http.get(roverIp + '/' + data.key);
+    http.get('http://' + roverIp + '/' + data.key);
   }
 });
