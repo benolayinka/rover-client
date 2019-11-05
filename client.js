@@ -2,12 +2,14 @@ const WebSocket = require('ws');
 const http = require('http')
 const roverIp = process.env.ROVER_IP || '192.168.1.221'
 
+//start streaming
 if(process.env.WS)
 {
   const { exec } = require('child_process');
   exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=640, height=480, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
     if (err) {
       // node couldn't execute the command
+      console.log('error executing command');
       return;
     }
 
@@ -15,42 +17,52 @@ if(process.env.WS)
     console.log(`stdout: ${stdout}`);
     console.log(`stderr: ${stderr}`);
   });
-
-  // const {spawn} = require('child_process');
-  // const ls = spawn('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=640, height=480, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004');
-
-  // ls.stdout.on('data', (data) => {
-  //   console.log(`stdout: ${data}`);
-  // });
-
-  // ls.stderr.on('data', (data) => {
-  //   console.error(`stderr: ${data}`);
-  // });
-
-  // ls.on('close', (code) => {
-  //   console.log(`child process exited with code ${code}`);
-  // });
 }
 
+//websocket connection to server
 const path = 'wss://benolayinka.com/ws'
 
-const ws = new WebSocket(path);
+const stopRover = function() {
+  http.get('http://' + roverIp + '/x');
+}
 
-ws.on('open', function open() {
-  ws.send(JSON.stringify({event: "message", message: "pi connected!"}));
-});
+const sendRover = function(apiPath) {
+  http.get('http://' + roverIp + apiPath)
+}
 
-ws.on('message', function incoming(json) {
-  console.log('Received json: ', json);
-  data = JSON.parse(json)
-  console.log(data.message)
-  if(data.event === "keyUp")
-  {
-    //send stop command
-    http.get('http://' + roverIp + '/x');
+function connect() {
+  var ws = new WebSocket(path);
+
+  ws.onopen = function() {
+    console.log('websocket open!');
+    hello = {event: "message", message: "pi connected!"};
+    ws.send(JSON.stringify(hello));
   }
-  else if(data.event === "keyDown")
-  {
-    http.get('http://' + roverIp + '/' + data.key);
+
+  ws.onmessage = function(data) {
+    //data = JSON.parse(json)
+    if(data.event === "keyUp")
+    {
+      //send stop command
+      stopRover()
+    }
+    else if(data.event === "keyDown")
+    {
+      sendRover(data.key)
+    }
   }
-});
+
+  ws.onclose = function(e) {
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    setTimeout(function() {
+      connect();
+    }, 1000);
+  }
+
+  ws.onerror = function(err) {
+    console.error('Socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
+}
+
+connect();
