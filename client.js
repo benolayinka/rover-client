@@ -41,6 +41,7 @@ function connect() {
 
   ws.onmessage = function(data) {
     //data = JSON.parse(json)
+    console.log("received: ", data)
     if(data.event === "keyUp")
     {
       //send stop command
