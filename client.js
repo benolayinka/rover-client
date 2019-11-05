@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 const http = require('http')
-const roverIp = process.env.ROVER_IP || 192.168.1.221
+const roverIp = process.env.ROVER_IP || '192.168.1.221'
 
 if(process.env.WS)
 {
@@ -25,11 +25,13 @@ const path = 'wss://benolayinka.com/ws'
 const ws = new WebSocket(path);
 
 ws.on('open', function open() {
-  ws.send('something');
+  ws.send(JSON.stringify({event: "message", message: "pi connected!"}));
 });
 
-ws.on('message', function incoming(data) {
-  console.log(data);
+ws.on('message', function incoming(json) {
+  console.log('Received json: ', json);
+  data = JSON.parse(json)
+  console.log(data.message)
   if(data.event === "keyUp")
   {
     //send stop command
@@ -37,6 +39,6 @@ ws.on('message', function incoming(data) {
   }
   else if(data.event === "keyDown")
   {
-    http.get(roverIp + '/' data.key);
+    http.get(roverIp + '/' + data.key);
   }
 });
