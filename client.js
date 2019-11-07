@@ -20,16 +20,20 @@ exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, 
 const path = 'wss://benolayinka.com/ws'
 
 const stopRover = function() {
-  http.get('http://' + roverIp + '/x').on('error', (err) => {
+  http.get('http://' + roverIp + '/x', function (res) {
+
+  }).on('error', (err) => {
       // Check if retry is needed
-      console.log(error)
+      console.log(err)
       });
 }
 
 const sendRover = function(apiPath) {
-  http.get('http://' + roverIp + '/' + apiPath).on('error', (err) => {
+  http.get('http://' + roverIp + '/' + apiPath, function (res) {
+
+  }).on('error', (err) => {
       // Check if retry is needed
-      console.log(error)
+      console.log(err)
       });
 }
 
