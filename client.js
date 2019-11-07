@@ -24,11 +24,13 @@ const stopRover = function() {
       // Check if retry is needed
       console.log(error)
       }
-    });;
 }
 
 const sendRover = function(apiPath) {
-  http.get('http://' + roverIp + '/' + apiPath)
+  http.get('http://' + roverIp + '/' + apiPath).on('error', (err) => {
+      // Check if retry is needed
+      console.log(error)
+      }
 }
 
 function connect() {
