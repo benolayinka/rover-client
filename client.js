@@ -23,14 +23,14 @@ const stopRover = function() {
   http.get('http://' + roverIp + '/x').on('error', (err) => {
       // Check if retry is needed
       console.log(error)
-      }
+      });
 }
 
 const sendRover = function(apiPath) {
   http.get('http://' + roverIp + '/' + apiPath).on('error', (err) => {
       // Check if retry is needed
       console.log(error)
-      }
+      });
 }
 
 function connect() {
