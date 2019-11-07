@@ -5,7 +5,7 @@
   "main": "client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "WS=true nohup node client"
+    "start": "forever start client"
   },
   "author": "",
   "license": "ISC",
