@@ -10,7 +10,7 @@ if(process.env.PI){
   const Serial = require('raspi-serial').Serial;
    
   raspi.init(() => {
-    var serial = new Serial(portId="/dev/ttyACM0", baudrate=9600);
+    var serial = new Serial({portId:"/dev/ttyACM0", baudrate: 9600});
     serial.open(() => {
       stopRover = function() {
         serial.write('x')
