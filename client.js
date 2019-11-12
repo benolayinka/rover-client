@@ -2,6 +2,9 @@ const WebSocket = require('ws');
 
 process.env.PI = process.env.PI || true;
 
+var sendRover;
+var stopRover;
+
 if(process.env.PI){
   const raspi = require('raspi');
   const Serial = require('raspi-serial').Serial;
@@ -9,10 +12,10 @@ if(process.env.PI){
   raspi.init(() => {
     var serial = new Serial();
     serial.open(() => {
-      const stopRover = function() {
+      stopRover = function() {
         serial.write('x')
       }
-      const sendRover = function(apiPath) {
+      sendRover = function(apiPath) {
         serial.write(apiPath);
       }
     });
@@ -22,16 +25,16 @@ if(process.env.PI){
 if(process.env.ESP){
   const http = require('http')
   const roverIp = process.env.ROVER_IP || '192.168.1.221'
-  const stopRover = function() {
-  http.get('http://' + roverIp + '/x', function (res) {
+  stopRover = function() {
+    http.get('http://' + roverIp + '/x', function (res) {
 
-  }).on('error', (err) => {
-        // Check if retry is needed
-        console.log(err)
-        });
+    }).on('error', (err) => {
+          // Check if retry is needed
+          console.log(err)
+          });
   }
 
-  const sendRover = function(apiPath) {
+  sendRover = function(apiPath) {
     http.get('http://' + roverIp + '/' + apiPath, function (res) {
 
     }).on('error', (err) => {
