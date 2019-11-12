@@ -61,10 +61,11 @@ function connect() {
   }
 
   ws.onclose = function(e) {
-    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    console.log('Socket is closed. Stopping rover and reconnecting.', e.reason);
+    stopRover()
     setTimeout(function() {
       connect();
-    }, 1000);
+    }, 100);
   }
 
   ws.onerror = function(err) {
