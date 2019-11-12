@@ -2,10 +2,10 @@ const WebSocket = require('ws');
 
 process.env.PI = process.env.PI || true;
 
-var sendRover;
-var stopRover;
+var sendRover = function(key){};
+var stopRover = function(){};
 
-if(process.env.PI){
+if(process.env.PI === "true"){
   const raspi = require('raspi');
   const Serial = require('raspi-serial').Serial;
    
@@ -22,7 +22,7 @@ if(process.env.PI){
   });
 }
 
-if(process.env.ESP){
+if(process.env.ESP === "true"){
   const http = require('http')
   const roverIp = process.env.ROVER_IP || '192.168.1.221'
   stopRover = function() {
@@ -46,7 +46,7 @@ if(process.env.ESP){
 
 //start streaming
 const { exec } = require('child_process');
-exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=640, height=480, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
+exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=864, height=480, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
   if (err) {
     // node couldn't execute the command
     console.log('error executing command');
