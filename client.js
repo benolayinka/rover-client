@@ -1,6 +1,45 @@
 const WebSocket = require('ws');
-const http = require('http')
-const roverIp = process.env.ROVER_IP || '192.168.1.221'
+
+process.env.PI = process.env.PI || true;
+
+if(process.env.PI){
+  const raspi = require('raspi');
+  const Serial = require('raspi-serial').Serial;
+   
+  raspi.init(() => {
+    var serial = new Serial();
+    serial.open(() => {
+      const stopRover = function() {
+        serial.write('x')
+      }
+      const sendRover = function(apiPath) {
+        serial.write(apiPath);
+      }
+    });
+  });
+}
+
+if(process.env.ESP){
+  const http = require('http')
+  const roverIp = process.env.ROVER_IP || '192.168.1.221'
+  const stopRover = function() {
+  http.get('http://' + roverIp + '/x', function (res) {
+
+  }).on('error', (err) => {
+        // Check if retry is needed
+        console.log(err)
+        });
+  }
+
+  const sendRover = function(apiPath) {
+    http.get('http://' + roverIp + '/' + apiPath, function (res) {
+
+    }).on('error', (err) => {
+        // Check if retry is needed
+        console.log(err)
+        });
+  }
+}
 
 //start streaming
 const { exec } = require('child_process');
@@ -18,24 +57,6 @@ exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, 
 
 //websocket connection to server
 const path = 'wss://benolayinka.com/ws'
-
-const stopRover = function() {
-  http.get('http://' + roverIp + '/x', function (res) {
-
-  }).on('error', (err) => {
-      // Check if retry is needed
-      console.log(err)
-      });
-}
-
-const sendRover = function(apiPath) {
-  http.get('http://' + roverIp + '/' + apiPath, function (res) {
-
-  }).on('error', (err) => {
-      // Check if retry is needed
-      console.log(err)
-      });
-}
 
 function connect() {
   var ws = new WebSocket(path);
