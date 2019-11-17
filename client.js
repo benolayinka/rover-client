@@ -19,7 +19,7 @@ if(process.env.PI === "true"){
       sendRover = function(apiPath) {
         switch(apiPath) {
           case 'w':
-            serial.write('speed 30\r')
+            serial.write('speed 35\r')
             // code block
             break;
           case 'a':
@@ -44,7 +44,7 @@ if(process.env.PI === "true"){
 if(false) {
   //start streaming
   const { exec } = require('child_process');
-  exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=864, height=480, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
+  exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=1280, height=720, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
     if (err) {
       // node couldn't execute the command
       console.log('error executing command');
