@@ -18,18 +18,18 @@ if(process.env.PI === "true"){
       }
       sendRover = function(apiPath) {
         switch(apiPath) {
-          case w:
+          case 'w':
             serial.write('speed 30\r')
             // code block
             break;
-          case a:
+          case 'a':
             serial.write('steer -50\r')
             // code block
             break;
-          case s:
+          case 's':
             serial.write('speed 0\r')
             break;
-          case d:
+          case 'd':
             serial.write('steer 50\r')
             break
           default:
