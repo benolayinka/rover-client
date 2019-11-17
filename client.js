@@ -10,12 +10,31 @@ if(process.env.PI === "true"){
   const Serial = require('raspi-serial').Serial;
    
   raspi.init(() => {
-    var serial = new Serial({portId:"/dev/ttyACM0", baudrate: 9600});
+    //var serial = new Serial({portId:"/dev/ttyACM0", baudrate: 9600});
+    var serial = new Serial({portId:"/dev/ttyUSB0", baudrate: 9600});
     serial.open(() => {
       stopRover = function() {
-        serial.write('x')
+        serial.write('speed 0\r')
       }
       sendRover = function(apiPath) {
+        switch(apiPath) {
+          case w:
+            serial.write('speed 30\r')
+            // code block
+            break;
+          case a:
+            serial.write('steer -50\r')
+            // code block
+            break;
+          case s:
+            serial.write('speed 0\r')
+            break;
+          case d:
+            serial.write('steer 50\r')
+            break
+          default:
+            // code block
+        }
         serial.write(apiPath);
       }
     });
