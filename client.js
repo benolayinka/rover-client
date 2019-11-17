@@ -41,7 +41,9 @@ if(process.env.PI === "true"){
   });
 }
 
-if(false) {
+process.env.VIDEO = process.env.VIDEO || true;
+
+if(process.env.VIDEO) {
   //start streaming
   const { exec } = require('child_process');
   exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=1280, height=720, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
