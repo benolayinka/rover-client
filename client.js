@@ -8,6 +8,7 @@ var stopRover = function(){};
 var serial_path
 var baud
 var scaled_speed
+var scaled_steer
 var have_rover = false;
 
 if(process.env.ROVER === 'mars') {
@@ -15,6 +16,7 @@ if(process.env.ROVER === 'mars') {
   serial_path = "/dev/ttyACM0"
   baud = 9600
   scaled_speed = 90
+  scaled_steer = 90
 }
 
 if(process.env.ROVER === 'traxxas') {
@@ -22,6 +24,7 @@ if(process.env.ROVER === 'traxxas') {
   serial_path = "/dev/ttyUSB0"
   baud = 9600
   scaled_speed = 35
+  scaled_steer = 60
 }
 
 if(have_rover){
