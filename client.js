@@ -40,12 +40,12 @@ if(have_rover){
           case 'w':
           case 's':
             console.log('speed 0')
-            serial.write('speed 0')
+            serial.write('speed 0\r')
             break;
           case 'a':
           case 'd':
             console.log('steer 0')
-            serial.write('steer 0')
+            serial.write('steer 0\r')
             break
           default:
             console.log('unknown command')
@@ -55,7 +55,7 @@ if(have_rover){
       sendRoverKeyDown = function(key) {
         switch(key) {
           case 'w':
-            serial.write('speed ' + scaled_speed)
+            serial.write('speed ' + scaled_speed + '\r')
             break;
           case 'a':
             serial.write('steer -' + scaled_speed)
@@ -64,7 +64,7 @@ if(have_rover){
             serial.write('speed -' + scaled_speed)
             break;
           case 'd':
-            serial.write('steer ' + + scaled_speed)
+            serial.write('steer ' + scaled_speed)
             break
           default:
             console.log('unknown command')
