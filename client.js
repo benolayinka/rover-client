@@ -7,18 +7,21 @@ var stopRover = function(){};
 
 var serial_path
 var baud
+var scaled_speed
 var have_rover = false;
 
 if(process.env.ROVER === 'mars') {
   have_rover = true
   serial_path = "/dev/ttyACM0"
   baud = 9600
+  scaled_speed = 90
 }
 
 if(process.env.ROVER === 'traxxas') {
   have_rover = true
   serial_path = "/dev/ttyUSB0"
   baud = 9600
+  scaled_speed = 35
 }
 
 if(have_rover){
@@ -50,16 +53,16 @@ if(have_rover){
       sendRoverKeyDown = function(key) {
         switch(key) {
           case 'w':
-            serial.write('speed 35\r')
+            serial.write('speed ' + scaled_speed)
             break;
           case 'a':
-            serial.write('steer -35\r')
+            serial.write('steer -' + scaled_speed)
             break;
           case 's':
-            serial.write('speed -35\r')
+            serial.write('speed -' + scaled_speed)
             break;
           case 'd':
-            serial.write('steer 35\r')
+            serial.write('steer ' + + scaled_speed)
             break
           default:
             console.log('unknown command')
