@@ -39,11 +39,13 @@ if(have_rover){
         switch(key) {
           case 'w':
           case 's':
-            serial.write('speed 0\r')
+            console.log('speed 0')
+            serial.write('speed 0')
             break;
           case 'a':
           case 'd':
-            serial.write('steer 0\r')
+            console.log('steer 0')
+            serial.write('steer 0')
             break
           default:
             console.log('unknown command')
