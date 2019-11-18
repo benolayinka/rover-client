@@ -1,73 +1,84 @@
+require('dotenv-safe').config();
 const WebSocket = require('ws');
 
-process.env.PI = process.env.PI || true;
-
-var sendRover = function(key){};
+var sendRoverKeyDown = function(key){};
+var sendRoverKeyUp = function(key){};
 var stopRover = function(){};
 
-if(process.env.PI === "true"){
+var serial_path
+var baud
+var have_rover = false;
+
+if(process.env.ROVER === 'mars') {
+  have_rover = true
+  serial_path = "/dev/ttyACM0"
+  baud = 9600
+}
+
+if(process.env.ROVER === 'traxxas') {
+  have_rover = true
+  serial_path = "/dev/ttyUSB0"
+  baud = 9600
+}
+
+if(have_rover){
   const raspi = require('raspi');
   const Serial = require('raspi-serial').Serial;
    
   raspi.init(() => {
-    //var serial = new Serial({portId:"/dev/ttyACM0", baudrate: 9600});
-    var serial = new Serial({portId:"/dev/ttyUSB0", baudrate: 9600});
+    var serial = new Serial({portId:serial_path, baudrate: baud});
     serial.open(() => {
       stopRover = function() {
         serial.write('speed 0\r')
+        serial.write('steer 0\r')
       }
-      sendRover = function(apiPath) {
-        switch(apiPath) {
+      sendRoverKeyUp = function(key) {
+        switch(key) {
           case 'w':
-            serial.write('speed 35\r')
-            // code block
-            break;
-          case 'a':
-            serial.write('steer -50\r')
-            // code block
-            break;
           case 's':
             serial.write('speed 0\r')
             break;
+          case 'a':
           case 'd':
-            serial.write('steer 50\r')
+            serial.write('steer 0\r')
             break
           default:
-            // code block
+            console.log('unknown command')
+            break
         }
-        serial.write(apiPath);
+      }
+      sendRoverKeyDown = function(key) {
+        switch(key) {
+          case 'w':
+            serial.write('speed 35\r')
+            break;
+          case 'a':
+            serial.write('steer -35\r')
+            break;
+          case 's':
+            serial.write('speed -35\r')
+            break;
+          case 'd':
+            serial.write('steer 35\r')
+            break
+          default:
+            console.log('unknown command')
+            break
+        }
       }
     });
   });
 }
 
-process.env.VIDEO = process.env.VIDEO || true;
-
-if(process.env.VIDEO) {
-  //start streaming
-  const { exec } = require('child_process');
-  exec('gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=1280, height=720, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004', (err, stdout, stderr) => {
-    if (err) {
-      // node couldn't execute the command
-      console.log('error executing command');
-      return;
-    }
-
-    // the *entire* stdout and stderr (buffered)
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-  });
-}
-
 //websocket connection to server
-const path = 'wss://benolayinka.com/ws'
+const path = 'wss://' + process.env.APP_HOSTNAME + '/ws'
 
 function connect() {
   var ws = new WebSocket(path);
 
   ws.onopen = function() {
     console.log('websocket open!');
-    hello = {event: "message", message: "pi connected!"};
+    hello = {event: "message", message: process.env.ROVER + " rover connected!"};
     ws.send(JSON.stringify(hello));
   }
 
@@ -77,11 +88,11 @@ function connect() {
     if(d.event === "keyUp")
     {
       //send stop command
-      stopRover()
+      sendRoverKeyUp(d.key)
     }
     else if(d.event === "keyDown")
     {
-      sendRover(d.key)
+      sendRoverKeyDown(d.key)
     }
   }
 
