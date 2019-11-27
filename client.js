@@ -42,6 +42,7 @@ if(have_arm) {
   serialInit()
 
   keysToCommand = function(keysPressed) {
+    let x, y, z
 
     if(keysPressed.includes('w'))
       y+=inc
