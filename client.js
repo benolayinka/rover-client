@@ -96,6 +96,8 @@ function serialInit(){
 //websocket connection to server
 const path = 'wss://' + process.env.APP_HOSTNAME + '/ws'
 
+var oldKeysPressed = []
+
 function connect() {
   var ws = new WebSocket(path);
 
@@ -108,7 +110,6 @@ function connect() {
   ws.onmessage = function(e) {
     d = JSON.parse(e.data)
     console.log(d)
-    var oldKeysPressed
     if(d.event === 'keysPressed') {
       function arraysEqual(_arr1, _arr2) {
           if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
@@ -125,8 +126,10 @@ function connect() {
       console.log('d.pressed ', d.pressed)
       console.log('oldKeysPressed ', oldKeysPressed)
       if(!arraysEqual(d.pressed, oldKeysPressed)){
-        oldKeysPressed = d.pressed
-        keysToCommand(d.pressed)
+        oldKeysPressed = d.pressed.slice()
+        if (typeof keysToCommand === "function") { 
+            keysToCommand(d.pressed)
+        }
       }
     }
   }
