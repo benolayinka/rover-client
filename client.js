@@ -52,7 +52,7 @@ if(have_arm) {
       x+=inc
     if(keysPressed.includes('d'))
       x-=inc
-
+    console.debug(`writing x ${x} y ${y} and z ${z}`)
     serial.write(`rel ${x} ${y} ${z}\r`)
   }
 }
