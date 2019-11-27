@@ -17,7 +17,7 @@ var serial
 
 if(process.env.ROVER === 'arm') {
   have_arm = true
-  serial_path = "/dev/ttyACM0"
+  serial_path = "/dev/ttyUSB0"
   baud = 9600
   inc = 10
 } 
@@ -72,7 +72,7 @@ if(have_rover) {
     if(keysPressed.includes('a'))
       steer -= scaled_steer
 
-    console.log(`writing speed ${speed} and steer ${steer}`)
+    console.debug(`writing speed ${speed} and steer ${steer}`)
     serial.write('speed ' + speed + '\r')
     serial.write('steer ' + steer + '\r')
   }
@@ -88,7 +88,7 @@ function serialInit(){
       serial.open();
     }
     catch(e) {
-      console.log(e)
+      console.debug(e)
     }
   })
 }
@@ -102,14 +102,14 @@ function connect() {
   var ws = new WebSocket(path);
 
   ws.onopen = function() {
-    console.log('websocket open!');
+    console.debug('websocket open!');
     hello = {event: "message", message: process.env.ROVER + " rover connected!"};
     ws.send(JSON.stringify(hello));
   }
 
   ws.onmessage = function(e) {
     d = JSON.parse(e.data)
-    console.log(d)
+    console.debug(d)
     if(d.event === 'keysPressed') {
       function arraysEqual(_arr1, _arr2) {
           if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
@@ -123,8 +123,8 @@ function connect() {
           return true;
       }
       //check for change in keys
-      console.log('d.pressed ', d.pressed)
-      console.log('oldKeysPressed ', oldKeysPressed)
+      console.debug('d.pressed ', d.pressed)
+      console.debug('oldKeysPressed ', oldKeysPressed)
       if(!arraysEqual(d.pressed, oldKeysPressed)){
         oldKeysPressed = d.pressed.slice()
         if (typeof keysToCommand === "function") { 
@@ -135,7 +135,7 @@ function connect() {
   }
 
   ws.onclose = function(e) {
-    console.log('Socket is closed. Stopping rover and reconnecting.', e.reason);
+    console.debug('Socket is closed. Stopping rover and reconnecting.', e.reason);
     stopRover()
     setTimeout(function() {
       connect();
