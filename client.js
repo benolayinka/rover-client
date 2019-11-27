@@ -87,7 +87,7 @@ function serialInit(){
     catch(e) {
       console.log(e)
     }
-  }
+  })
 }
 
 //websocket connection to server
