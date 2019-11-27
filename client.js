@@ -19,7 +19,7 @@ if(process.env.ROVER === 'arm') {
   have_arm = true
   serial_path = "/dev/ttyUSB0"
   baud = 9600
-  inc = 10
+  inc = 1
 } 
 
 if(process.env.ROVER === 'mars') {
@@ -127,7 +127,7 @@ function connect() {
       //check for change in keys
       console.debug('d.pressed ', d.pressed)
       console.debug('oldKeysPressed ', oldKeysPressed)
-      if(!arraysEqual(d.pressed, oldKeysPressed)){
+      if(true || !arraysEqual(d.pressed, oldKeysPressed)){ //bypass this to hold button for arm
         oldKeysPressed = d.pressed.slice()
         if (typeof keysToCommand === "function") { 
             keysToCommand(d.pressed)
