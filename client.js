@@ -43,6 +43,7 @@ if(have_arm) {
 
   keysToCommand = function(keysPressed) {
     let x, y, z
+    x = y = z = 0
 
     if(keysPressed.includes('w'))
       y+=inc
