@@ -13,6 +13,8 @@ var inc
 var have_rover = false;
 var have_arm = false;
 
+var serial
+
 if(process.env.ROVER === 'arm') {
   have_arm = true
   serial_path = "/dev/ttyACM0"
@@ -80,7 +82,7 @@ function serialInit(){
   const Serial = require('raspi-serial').Serial;
    
   raspi.init(() => {
-    var serial = new Serial({portId:serial_path, baudrate: baud});
+    serial = new Serial({portId:serial_path, baudrate: baud});
     try {
       serial.open();
     }
