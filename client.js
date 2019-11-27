@@ -122,6 +122,8 @@ function connect() {
           return true;
       }
       //check for change in keys
+      console.log('d.pressed ', d.pressed)
+      console.log('oldKeysPressed ', oldKeysPressed)
       if(!arraysEqual(d.pressed, oldKeysPressed)){
         oldKeysPressed = d.pressed
         keysToCommand(d.pressed)
