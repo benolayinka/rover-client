@@ -49,9 +49,9 @@ if(have_arm) {
       y+=inc
     if(keysPressed.includes('s'))
       y-=inc
-    if(keysPressed.includes('a'))
-      x+=inc
     if(keysPressed.includes('d'))
+      x+=inc
+    if(keysPressed.includes('a'))
       x-=inc
     console.debug(`writing x ${x} y ${y} and z ${z}`)
     serial.write(`rel ${x} ${y} ${z}\r`)
