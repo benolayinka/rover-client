@@ -67,9 +67,9 @@ if(have_rover) {
       speed += scaled_speed
     if(keysPressed.includes('s'))
       speed -= scaled_speed
-    if(keysPressed.includes('a'))
-      steer += scaled_steer
     if(keysPressed.includes('d'))
+      steer += scaled_steer
+    if(keysPressed.includes('a'))
       steer -= scaled_steer
 
     console.log(`writing speed ${speed} and steer ${steer}`)
