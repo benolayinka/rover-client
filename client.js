@@ -72,6 +72,7 @@ if(have_rover) {
     if(keysPressed.includes('d'))
       steer -= scaled_steer
 
+    console.log(`writing speed ${speed} and steer ${steer}`)
     serial.write('speed ' + speed + '\r')
     serial.write('steer ' + steer + '\r')
   }
