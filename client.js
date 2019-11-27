@@ -19,7 +19,7 @@ if(process.env.ROVER === 'arm') {
   have_arm = true
   serial_path = "/dev/ttyUSB0"
   baud = 9600
-  inc = 1
+  inc = 5
 } 
 
 if(process.env.ROVER === 'mars') {
