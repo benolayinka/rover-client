@@ -125,9 +125,9 @@ function connect() {
           return true;
       }
       //check for change in keys
-      console.debug('d.pressed ', d.pressed)
-      console.debug('oldKeysPressed ', oldKeysPressed)
-      if(true || !arraysEqual(d.pressed, oldKeysPressed)){ //bypass this to hold button for arm
+      //console.debug('d.pressed ', d.pressed)
+      //console.debug('oldKeysPressed ', oldKeysPressed)
+      if(!arraysEqual(d.pressed, oldKeysPressed)){
         oldKeysPressed = d.pressed.slice()
         if (typeof keysToCommand === "function") { 
             keysToCommand(d.pressed)
