@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Load up .env
 set -o allexport
