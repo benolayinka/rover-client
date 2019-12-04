@@ -112,25 +112,27 @@ function connect() {
   ws.onmessage = function(e) {
     d = JSON.parse(e.data)
     console.debug(d)
-    if(d.event === 'keysPressed') {
-      function arraysEqual(_arr1, _arr2) {
-          if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
-            return false;
-          var arr1 = _arr1.concat().sort();
-          var arr2 = _arr2.concat().sort();
-          for (var i = 0; i < arr1.length; i++) {
-              if (arr1[i] !== arr2[i])
-                  return false;
+    if(d.rover === process.env.ROVER) {
+      if(d.event === 'keysPressed') {
+        function arraysEqual(_arr1, _arr2) {
+            if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
+              return false;
+            var arr1 = _arr1.concat().sort();
+            var arr2 = _arr2.concat().sort();
+            for (var i = 0; i < arr1.length; i++) {
+                if (arr1[i] !== arr2[i])
+                    return false;
+            }
+            return true;
+        }
+        //check for change in keys
+        //console.debug('d.pressed ', d.pressed)
+        //console.debug('oldKeysPressed ', oldKeysPressed)
+        if(!arraysEqual(d.pressed, oldKeysPressed)){
+          oldKeysPressed = d.pressed.slice()
+          if (typeof keysToCommand === "function") { 
+              keysToCommand(d.pressed)
           }
-          return true;
-      }
-      //check for change in keys
-      //console.debug('d.pressed ', d.pressed)
-      //console.debug('oldKeysPressed ', oldKeysPressed)
-      if(!arraysEqual(d.pressed, oldKeysPressed)){
-        oldKeysPressed = d.pressed.slice()
-        if (typeof keysToCommand === "function") { 
-            keysToCommand(d.pressed)
         }
       }
     }
