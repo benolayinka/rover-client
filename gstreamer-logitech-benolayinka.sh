@@ -1,3 +1,3 @@
-#!/bin/sh
-gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=$VIDEO_WIDTH, height=$VIDEO_HEIGHT" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=$VIDEO_PORT
+#!/bin/bash
+gst-launch-1.0 -v v4l2src device=/dev/video0 ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=$APP_HOSTNAME port=$VIDEO_PORT
 #gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=1280, height=720, framerate=(fraction)10/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=benolayinka.com port=8004
