@@ -45,13 +45,13 @@ if(have_arm) {
     let x, y, z
     x = y = z = 0
 
-    if(keysPressed.includes('w'))
+    if(keysPressed.includes('w') || keysPressed.includes('ArrowUp'))
       y+=inc
-    if(keysPressed.includes('s'))
+    if(keysPressed.includes('s') || keysPressed.includes('ArrowDown'))
       y-=inc
-    if(keysPressed.includes('d'))
+    if(keysPressed.includes('d') || keysPressed.includes('ArrowRight'))
       x+=inc
-    if(keysPressed.includes('a'))
+    if(keysPressed.includes('a') || keysPressed.includes('ArrowLeft'))
       x-=inc
     console.debug(`writing x ${x} y ${y} and z ${z}`)
     serial.write(`rel ${x} ${y} ${z}\r`)
@@ -65,13 +65,13 @@ if(have_rover) {
     let speed, steer
     speed = steer = 0;
 
-    if(keysPressed.includes('w'))
+    if(keysPressed.includes('w') || keysPressed.includes('ArrowUp'))
       speed += scaled_speed
-    if(keysPressed.includes('s'))
+    if(keysPressed.includes('s') || keysPressed.includes('ArrowDown'))
       speed -= scaled_speed
-    if(keysPressed.includes('d'))
+    if(keysPressed.includes('d') || keysPressed.includes('ArrowRight'))
       steer += scaled_steer
-    if(keysPressed.includes('a'))
+    if(keysPressed.includes('a') || keysPressed.includes('ArrowLeft'))
       steer -= scaled_steer
 
     console.debug(`writing speed ${speed} and steer ${steer}`)
