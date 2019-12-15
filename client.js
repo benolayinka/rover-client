@@ -147,6 +147,11 @@ function connect() {
               joystickToCommand(d.x, d.y, d.max)
           }
       }
+      else if(d.event = 'stop'){
+        if (typeof stopRover === "function") { 
+            stopRover();
+        }
+      }
     }
   }
 
