@@ -103,6 +103,7 @@ function serialInit(){
   const Serial = require('raspi-serial').Serial;
 
   stopRover = function(){
+    console.debug('writing stop!')
     serial.write('stop\r')
   }
    
@@ -147,7 +148,6 @@ function connect() {
       }
       else if(d.event === 'stop'){
         if (typeof stopRover === "function") { 
-            console.debug('stopping!')
             stopRover();
         }
       }
