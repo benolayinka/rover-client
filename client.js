@@ -137,12 +137,12 @@ function connect() {
               keysToCommand(d.pressed)
           }
       }
-      else if(d.event = 'joystick') {
+      else if(d.event === 'joystick') {
         if (typeof joystickToCommand === "function") { 
               joystickToCommand(d.x, d.y, d.max)
           }
       }
-      else if(d.event = 'stop'){
+      else if(d.event === 'stop'){
         if (typeof stopRover === "function") { 
             console.debug('stopping!')
             stopRover();
