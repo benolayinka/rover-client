@@ -49,7 +49,7 @@ if(have_arm) {
       x+=inc
     if(keysPressed.includes('a') || keysPressed.includes('ArrowLeft'))
       x-=inc
-    console.debug(`writing x ${x} y ${y} and z ${z}`)
+    console.debug(`keys - writing x ${x} y ${y} and z ${z}`)
     serial.write(`rel ${x} ${y} ${z}\r`)
   }
 }
@@ -70,7 +70,7 @@ if(have_rover) {
     if(keysPressed.includes('a') || keysPressed.includes('ArrowLeft'))
       steer -= scaled_steer
 
-    console.debug(`writing speed ${speed} and steer ${steer}`)
+    console.debug(`keys - writing speed ${speed} and steer ${steer}`)
     serial.write('speed ' + speed + '\r')
     serial.write('steer ' + steer + '\r')
   }
@@ -83,7 +83,7 @@ if(have_rover) {
     speed = map(y, -max, max, -scaled_steer, scaled_steer);
     steer = map(x, -max, max, -scaled_speed, scaled_speed);
     
-    console.debug(`writing speed ${speed} and steer ${steer}`)
+    console.debug(`joystick - writing speed ${speed} and steer ${steer}`)
     serial.write('speed ' + speed + '\r')
     serial.write('steer ' + steer + '\r')
 
