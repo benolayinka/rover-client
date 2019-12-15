@@ -80,8 +80,8 @@ if(have_rover) {
     let speed, steer
     speed = steer = 0;
 
-    speed = map(x, -max, max, -scaled_steer, scaled_steer);
-    steer = map(y, -max, max, -scaled_speed, scaled_speed);
+    speed = map(y, -max, max, -scaled_steer, scaled_steer);
+    steer = map(x, -max, max, -scaled_speed, scaled_speed);
     
     console.debug(`writing speed ${speed} and steer ${steer}`)
     serial.write('speed ' + speed + '\r')
