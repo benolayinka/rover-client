@@ -84,6 +84,9 @@ if(have_rover) {
 
     speed = map(y, -max, max, -scaled_steer, scaled_steer);
     steer = map(x, -max, max, -scaled_speed, scaled_speed);
+
+    speed = Math.round(speed)
+    steer = Math.round(steer)
     
     console.debug(`joystick - writing speed ${speed} and steer ${steer}`)
     serial.write('speed ' + speed + '\r')
