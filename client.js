@@ -11,6 +11,8 @@ var have_arm = false;
 
 var serial
 
+var stopRover;
+
 if(process.env.ROVER === 'arm') {
   have_arm = true
   serial_path = "/dev/ttyUSB0"
@@ -97,7 +99,7 @@ function serialInit(){
   const raspi = require('raspi');
   const Serial = require('raspi-serial').Serial;
 
-  function stopRover(){
+  stopRover = function(){
     serial.write('stop\r')
   }
    
@@ -134,13 +136,6 @@ function connect() {
         if (typeof keysToCommand === "function") { 
               keysToCommand(d.pressed)
           }
-        //check for change in keys - disabled
-        // if(!arraysEqual(d.pressed, oldKeysPressed)){
-        //   oldKeysPressed = d.pressed.slice()
-        //   if (typeof keysToCommand === "function") { 
-        //       keysToCommand(d.pressed)
-        //   }
-        // }
       }
       else if(d.event = 'joystick') {
         if (typeof joystickToCommand === "function") { 
@@ -149,6 +144,7 @@ function connect() {
       }
       else if(d.event = 'stop'){
         if (typeof stopRover === "function") { 
+            console.debug('stopping!')
             stopRover();
         }
       }
