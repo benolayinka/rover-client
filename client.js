@@ -75,11 +75,11 @@ if(have_rover) {
     serial.write('steer ' + steer + '\r')
   }
 
-  joystickToCommand = function(x,y) {
+  //x, y, and maximum joystick travel distance
+  joystickToCommand = function(x,y, max) {
     let speed, steer
     speed = steer = 0;
 
-    let max = 50; //maximum joystick travel distance
     speed = map(x, -max, max, -scaled_steer, scaled_steer);
     steer = map(y, -max, max, -scaled_speed, scaled_speed);
     
@@ -144,7 +144,7 @@ function connect() {
       }
       else if(d.event = 'joystick') {
         if (typeof joystickToCommand === "function") { 
-              joystickToCommand(d.x, d.y)
+              joystickToCommand(d.x, d.y, d.max)
           }
       }
     }
