@@ -96,6 +96,10 @@ if(have_rover) {
 function serialInit(){
   const raspi = require('raspi');
   const Serial = require('raspi-serial').Serial;
+
+  function stopRover(){
+    serial.write('stop\r')
+  }
    
   raspi.init(() => {
     serial = new Serial({portId:serial_path, baudrate: baud});
@@ -148,7 +152,9 @@ function connect() {
 
   ws.onclose = function(e) {
     console.debug('Socket is closed. Stopping rover and reconnecting.', e.reason);
-    stopRover()
+    if (typeof stopRover === "function") { 
+        stopRover();
+    }
     setTimeout(function() {
       connect();
     }, 100);
