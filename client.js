@@ -1,10 +1,6 @@
 require('dotenv-safe').config();
 const WebSocket = require('ws');
 
-var sendRoverKeyDown = function(key){};
-var sendRoverKeyUp = function(key){};
-var stopRover = function(){};
-
 var serial_path
 var baud
 var scaled_speed
@@ -78,6 +74,23 @@ if(have_rover) {
     serial.write('speed ' + speed + '\r')
     serial.write('steer ' + steer + '\r')
   }
+
+  joystickToCommand = function(x,y) {
+    let speed, steer
+    speed = steer = 0;
+
+    let max = 50; //maximum joystick travel distance
+    speed = map(x, -max, max, -scaled_steer, scaled_steer);
+    steer = map(y, -max, max, -scaled_speed, scaled_speed);
+    
+    console.debug(`writing speed ${speed} and steer ${steer}`)
+    serial.write('speed ' + speed + '\r')
+    serial.write('steer ' + steer + '\r')
+
+    function map( x,  in_min,  in_max,  out_min,  out_max){
+      return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+  }
 }
 
 function serialInit(){
@@ -114,26 +127,21 @@ function connect() {
     console.debug(d)
     if(d.rover === process.env.ROVER) {
       if(d.event === 'keysPressed') {
-        function arraysEqual(_arr1, _arr2) {
-            if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
-              return false;
-            var arr1 = _arr1.concat().sort();
-            var arr2 = _arr2.concat().sort();
-            for (var i = 0; i < arr1.length; i++) {
-                if (arr1[i] !== arr2[i])
-                    return false;
-            }
-            return true;
-        }
-        //check for change in keys
-        //console.debug('d.pressed ', d.pressed)
-        //console.debug('oldKeysPressed ', oldKeysPressed)
-        if(!arraysEqual(d.pressed, oldKeysPressed)){
-          oldKeysPressed = d.pressed.slice()
-          if (typeof keysToCommand === "function") { 
+        if (typeof keysToCommand === "function") { 
               keysToCommand(d.pressed)
           }
-        }
+        //check for change in keys - disabled
+        // if(!arraysEqual(d.pressed, oldKeysPressed)){
+        //   oldKeysPressed = d.pressed.slice()
+        //   if (typeof keysToCommand === "function") { 
+        //       keysToCommand(d.pressed)
+        //   }
+        // }
+      }
+      else if(d.event = 'joystick') {
+        if (typeof joystickToCommand === "function") { 
+              joystickToCommand(d.x, d.y)
+          }
       }
     }
   }
@@ -152,4 +160,19 @@ function connect() {
   };
 }
 
+//helper to deep compare two arrays
+function arraysEqual(_arr1, _arr2) {
+    if (!Array.isArray(_arr1) || ! Array.isArray(_arr2) || _arr1.length !== _arr2.length)
+      return false;
+    var arr1 = _arr1.concat().sort();
+    var arr2 = _arr2.concat().sort();
+    for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i])
+            return false;
+    }
+    return true;
+}
+
 connect();
+
+
