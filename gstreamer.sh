@@ -11,5 +11,10 @@ echo "$APP_HOSTNAME"
 echo "PORT = "
 echo "$VIDEO_PORT"
 
-#gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw, format=YUY2, width=$VIDEO_WIDTH, height=$VIDEO_HEIGHT, framerate=(fraction)$VIDEO_FPS/1" ! videoconvert ! queue ! omxh264enc ! queue ! rtph264pay pt=96 config-interval=1 ! udpsink host=$APP_HOSTNAME port=$VIDEO_PORT
-gst-launch-1.0 -v v4l2src ! video/x-h264,width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,framerate=$VIDEO_FPS/1, profile=baseline ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host=$APP_HOSTNAME port=$VIDEO_PORT
+if [ "$VIDEO_ROTATION" -gt "0" ]
+	then v4l2-ctl --set-ctrl=rotate=$VIDEO_ROTATION
+
+gst-launch-1.0 -v v4l2src \
+! video/x-h264,width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,framerate=$VIDEO_FPS/1, profile=baseline \
+! h264parse ! rtph264pay config-interval=1 pt=96 \
+! udpsink host=$APP_HOSTNAME port=$VIDEO_PORT
