@@ -98,6 +98,13 @@ if(have_rover) {
   }
 }
 
+function boardInit(){
+  const five = require('johnny-five')
+  board = new five.board()
+
+  
+}
+
 function serialInit(){
   const raspi = require('raspi');
   const Serial = require('raspi-serial').Serial;
