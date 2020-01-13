@@ -9,6 +9,10 @@ class Robot {
 		//rightStick.x/y
 
 	}
+
+	emergencyStop() {
+		//stop motors!
+	}
 }
 
 module.exports = Robot

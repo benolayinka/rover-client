@@ -1,5 +1,11 @@
 require('dotenv-safe').config();
+const winston = require('winston')
 const WebSocket = require('ws');
+
+//can add log file to transports.
+//to display all msgs to console, disable silent
+winston.add(new winston.transports.Console({ silent: true }))
+//winston.add(new winston.transports.File({ filename: 'logfile.log' }))
 
 var robot = null;
 
@@ -7,8 +13,17 @@ if(process.env.ROVER){
   var five = require("johnny-five");
   var board = new five.Board();
 
-  const imp = require('./robots/' + process.env.ROVER + '.js')
-  robot = new imp(board)
+  try {
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    const imp = require('./robots/' + capitalizeFirstLetter(process.env.ROVER) + '.js')
+    robot = new imp(board)
+  }
+  catch(e) {
+    const imp = require('./robots/' + process.env.ROVER + '.js')
+    robot = new imp(board)
+  }
 }
 
 //websocket connection to server
@@ -18,30 +33,18 @@ function connect() {
   var ws = new WebSocket(path);
 
   ws.onopen = function() {
-    console.debug('websocket open!');
+    winston.info('websocket open!');
     hello = {event: "message", message: process.env.ROVER + " rover connected!"};
     ws.send(JSON.stringify(hello));
   }
 
   ws.onmessage = function(e) {
     d = JSON.parse(e.data)
-    console.debug(d)
-    //ben hack
-    process.env.ROVER = 'mars'
-    if(d.rover === process.env.ROVER) {
-      if(d.event === 'keysPressed') {
-        if (typeof keysToCommand === "function") { 
-              keysToCommand(d.pressed)
-          }
-      }
-      else if(d.event === 'joystick') {
-        if (typeof joystickToCommand === "function") { 
-              joystickToCommand(d.x, d.y, d.max)
-          }
-      }
-      else if(d.event === 'stop'){
-        if (typeof stopRover === "function") { 
-            stopRover();
+    winston.info(d)
+    if(d.rover === process.env.ROVER || d.rover === 'Debug') {
+      if(d.event === 'stop'){
+        if (typeof robot.emergencyStop === "function") { 
+            robot.emergencyStop();
         }
       }
       else if(d.event === 'controls'){
@@ -53,7 +56,7 @@ function connect() {
   }
 
   ws.onclose = function(e) {
-    console.debug('Socket is closed. Stopping rover and reconnecting.', e.reason);
+    winston.info('Socket is closed. Stopping rover and reconnecting.', e.reason);
     if (typeof stopRover === "function") { 
         stopRover();
     }

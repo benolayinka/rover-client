@@ -3,17 +3,14 @@ var five = require("johnny-five");
 
 const PIN_SERVO_TILT='A1'
 const PIN_SERVO_PAN='A0'
-const SERVO_PAN_MIN_PULSE=1200
-const SERVO_PAN_MAX_PULSE=1800
-const SERVO_TILT_MIN_PULSE=1000
-const SERVO_TILT_MAX_PULSE=1800
+const SERVO_TILT_MIN_ANGLE=30
+const SERVO_TILT_MAX_ANGLE=150
+const SERVO_PAN_MIN_ANGLE=45
+const SERVO_PAN_MAX_ANGLE=135
 const PIN_LEFT_MOTOR_SPEED=6
 const PIN_RIGHT_MOTOR_SPEED=5
 const PIN_LEFT_MOTOR_DIRECTION=8
 const PIN_RIGHT_MOTOR_DIRECTION=7
-const MOTOR_MAX=255
-const ANGLE_MAX=90
-const ANGLE_MIN=-90
 
 class Mars extends Robot{
 	constructor(board) {
@@ -39,21 +36,17 @@ class Mars extends Robot{
 
 			this.motorLeft.angle = this.motorRight.angle = 0
 
-			let panPWMRange = [SERVO_PAN_MIN_PULSE, SERVO_PAN_MAX_PULSE]
-
 			// Servo to control panning
 			this.servoPan = new five.Servo({
 			    pin: PIN_SERVO_PAN,
-			    pwmRange: panPWMRange,
+			    range: [SERVO_PAN_MIN_ANGLE, SERVO_PAN_MAX_ANGLE],
 			    center: true
 			  });
-
-			let tiltPWMRange = [SERVO_TILT_MIN_PULSE, SERVO_TILT_MAX_PULSE]
 
 			  // Servo to control tilt
 			this.servoTilt = new five.Servo({
 			    pin: PIN_SERVO_TILT,
-			    range: tiltPWMRange,
+			    range: [SERVO_TILT_MIN_ANGLE, SERVO_TILT_MAX_ANGLE],
 			    center: true
 			  });
     	})
@@ -85,6 +78,15 @@ class Mars extends Robot{
   		let y = rightJoystickData.y
   		let x = rightJoystickData.x
 
+  		//joystick data is -90 to 90 and five expects 0 to 180
+  		x+=90
+
+  		//pan servo is backwards
+  		x=180-x
+
+  		//straight ahead on tilt is 55, so we want 0 to be 55..
+  		y+=55
+
   		this.servoTilt.to(y)
   		this.servoPan.to(x)
   	}
@@ -93,8 +95,18 @@ class Mars extends Robot{
   		if(!this.ready)
   			return
 
-  		this.leftJoystick(gamepadData.leftJoystick)
-  		this.rightJoystick(gamepadData.rightJoystick)
+  		if(gamepadData.leftJoystick)
+  			this.leftJoystick(gamepadData.leftJoystick)
+
+  		if(gamepadData.rightJoystick)
+  			this.rightJoystick(gamepadData.rightJoystick)
+  	}
+
+  	emergencyStop() {
+  		motorRight.stop()
+  		motorLeft.stop()
+  		servoPan.center()
+  		servoTilt.center()
   	}
 }
 
