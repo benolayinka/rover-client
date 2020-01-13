@@ -3,7 +3,7 @@ var five = require("johnny-five");
 
 const PIN_SERVO_TILT='A1'
 const PIN_SERVO_PAN='A0'
-const SERVO_TILT_MIN_ANGLE=30
+const SERVO_TILT_MIN_ANGLE=40
 const SERVO_TILT_MAX_ANGLE=150
 const SERVO_PAN_MIN_ANGLE=45
 const SERVO_PAN_MAX_ANGLE=135
