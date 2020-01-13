@@ -11,6 +11,7 @@ const PIN_LEFT_MOTOR_SPEED=6
 const PIN_RIGHT_MOTOR_SPEED=5
 const PIN_LEFT_MOTOR_DIRECTION=8
 const PIN_RIGHT_MOTOR_DIRECTION=7
+const MOTOR_MAX=255
 
 class Mars extends Robot{
 	constructor(board) {
