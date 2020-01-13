@@ -4,7 +4,7 @@ const WebSocket = require('ws');
 
 //can add log file to transports.
 //to display all msgs to console, disable silent
-winston.add(new winston.transports.Console({ silent: false }))
+winston.add(new winston.transports.Console({ silent: true }))
 //winston.add(new winston.transports.File({ filename: 'logfile.log' }))
 
 var robot = null;
