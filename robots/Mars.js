@@ -5,8 +5,10 @@ const PIN_SERVO_TILT='A1'
 const PIN_SERVO_PAN='A0'
 const SERVO_TILT_MIN_ANGLE=40
 const SERVO_TILT_MAX_ANGLE=150
+const SERVO_TILT_START=55
 const SERVO_PAN_MIN_ANGLE=45
 const SERVO_PAN_MAX_ANGLE=135
+const SERVO_PAN_START=90
 const PIN_LEFT_MOTOR_SPEED=6
 const PIN_RIGHT_MOTOR_SPEED=5
 const PIN_LEFT_MOTOR_DIRECTION=8
@@ -41,14 +43,16 @@ class Mars extends Robot{
 			this.servoPan = new five.Servo({
 			    pin: PIN_SERVO_PAN,
 			    range: [SERVO_PAN_MIN_ANGLE, SERVO_PAN_MAX_ANGLE],
-			    center: true
+			    center: true,
+          startAt: SERVO_PAN_START
 			  });
 
 			  // Servo to control tilt
 			this.servoTilt = new five.Servo({
 			    pin: PIN_SERVO_TILT,
 			    range: [SERVO_TILT_MIN_ANGLE, SERVO_TILT_MAX_ANGLE],
-			    center: true
+			    center: true,
+          startAt: SERVO_TILT_START
 			  });
     	})
   	}
@@ -104,10 +108,10 @@ class Mars extends Robot{
   	}
 
   	emergencyStop() {
-  		motorRight.stop()
-  		motorLeft.stop()
-  		servoPan.center()
-  		servoTilt.center()
+  		this.motorRight.stop()
+  		this.otorLeft.stop()
+  		this.servoPan.center()
+  		this.servoTilt.center()
   	}
 }
 
