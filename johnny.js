@@ -11,7 +11,11 @@ var robot = null;
 
 if(process.env.ROVER){
   var five = require("johnny-five");
-  var board = new five.Board();
+
+  var board = new five.Board({
+    repl: false,
+    debug: false,
+  });
 
   try {
     function capitalizeFirstLetter(string) {
@@ -21,6 +25,10 @@ if(process.env.ROVER){
     robot = new imp(board)
   }
   catch(e) {
+    if (e.code !== 'MODULE_NOT_FOUND') {
+        // Re-throw not "Module not found" errors 
+        throw e;
+    }
     const imp = require('./robots/' + process.env.ROVER + '.js')
     robot = new imp(board)
   }
@@ -41,7 +49,7 @@ function connect() {
   ws.onmessage = function(e) {
     d = JSON.parse(e.data)
     winston.info(d)
-    if(d.rover === process.env.ROVER || d.rover === 'Debug') {
+    if(true || d.rover === process.env.ROVER || d.rover === 'debug') {
       if(d.event === 'stop'){
         if (typeof robot.emergencyStop === "function") { 
             robot.emergencyStop();
