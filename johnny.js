@@ -1,11 +1,15 @@
 require('dotenv-safe').config();
 const winston = require('winston')
-const WebSocket = require('ws');
 
 //can add log file to transports.
 //to display all msgs to console, disable silent
-winston.add(new winston.transports.Console({ silent: true }))
-//winston.add(new winston.transports.File({ filename: 'logfile.log' }))
+winston.add(new winston.transports.Console({
+  format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.json()
+        ), 
+  silent: false 
+}))
 
 var robot = null;
 
@@ -34,51 +38,56 @@ if(process.env.ROVER){
   }
 }
 
-//websocket connection to server
-const path = 'wss://' + process.env.APP_HOSTNAME + '/ws'
+var uuid
+var available = true
 
-function connect() {
-  var ws = new WebSocket(path);
+var socket = require('socket.io-client')('https://benolayinka.com');
+socket.on('connect', function(){
+  winston.info('websocket open!');
 
-  ws.onopen = function() {
-    winston.info('websocket open!');
-    hello = {event: "message", message: process.env.ROVER + " rover connected!"};
-    ws.send(JSON.stringify(hello));
-  }
+  //send join request to enter room for rover 
+  socket.emit('join', process.env.ROVER)
 
-  ws.onmessage = function(e) {
-    d = JSON.parse(e.data)
-    winston.info(d)
-    if(true || d.rover === process.env.ROVER || d.rover === 'debug') {
-      if(d.event === 'stop'){
-        if (typeof robot.emergencyStop === "function") { 
-            robot.emergencyStop();
+  //continue once we're in the room
+  socket.on('joined room', ()=>{
+    winston.info('joined room')
+
+    socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
+
+    socket.on('message', (message)=> {
+      winston.info('message received', message)
+      switch(message.type) {
+        case 'request':
+          if(available) {
+            //grant request
+            available = false
+            uuid = message.uuid
+            socket.emit('message', {
+              type: 'request ack',
+              requestGranted: true,
+              uuid: message.uuid,
+            })
+            setInterval(()=>{
+              available = true
+            }, 1000 * 60)
+          }
+          else {
+            socket.emit('message', {
+              type: 'request ack',
+              requestGranted: false,
+              uuid: message.uuid,
+            })
+          }
+          break;
+        case 'controls':
+          if (typeof robot.onGamepad === "function") {
+             robot.onGamepad(message.data);
+          }
+        default:
+          // code block
         }
-      }
-      else if(d.event === 'controls'){
-        if (typeof robot.onGamepad === "function") { 
-            robot.onGamepad(d.data);
-        }
-      }
-    }
-  }
-
-  ws.onclose = function(e) {
-    winston.info('Socket is closed. Stopping rover and reconnecting.', e.reason);
-    if (typeof stopRover === "function") { 
-        stopRover();
-    }
-    setTimeout(function() {
-      connect();
-    }, 100);
-  }
-
-  ws.onerror = function(err) {
-    console.error('Socket encountered error: ', err.message, 'Closing socket');
-    ws.close();
-  };
-}
-
-connect();
+    })
+  })
+});
 
 
