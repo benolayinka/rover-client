@@ -18,4 +18,4 @@ fi
 gst-launch-1.0 -v v4l2src \
 ! video/x-h264,width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,framerate=$VIDEO_FPS/1, profile=baseline \
 ! h264parse ! rtph264pay config-interval=1 pt=96 \
-! udpsink host=$APP_HOSTNAME port=$VIDEO_PORT
+! udpsink sync=false host=$APP_HOSTNAME port=$VIDEO_PORT
