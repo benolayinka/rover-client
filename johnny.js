@@ -4,90 +4,119 @@ const winston = require('winston')
 //can add log file to transports.
 //to display all msgs to console, disable silent
 winston.add(new winston.transports.Console({
-  format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.json()
-        ), 
-  silent: false 
+  	silent: false 
 }))
 
 var robot = null;
 
 if(process.env.ROVER){
-  var five = require("johnny-five");
+  	var five = require("johnny-five");
 
-  var board = new five.Board({
-    repl: false,
-    debug: false,
-  });
+  	var board = new five.Board({
+		repl: false,
+		debug: true,
+  	});
 
-  try {
-    function capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-    const imp = require('./robots/' + capitalizeFirstLetter(process.env.ROVER) + '.js')
-    robot = new imp(board)
-  }
-  catch(e) {
-    if (e.code !== 'MODULE_NOT_FOUND') {
-        // Re-throw not "Module not found" errors 
-        throw e;
-    }
-    const imp = require('./robots/' + process.env.ROVER + '.js')
-    robot = new imp(board)
-  }
+  	try {
+		function capitalizeFirstLetter(string) {
+		  return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+		const imp = require('./robots/' + capitalizeFirstLetter(process.env.ROVER) + '.js')
+		robot = new imp(board)
+  	}
+  	catch(e) {
+		if (e.code !== 'MODULE_NOT_FOUND') {
+			// Re-throw not "Module not found" errors 
+			throw e;
+		}
+		const imp = require('./robots/' + process.env.ROVER + '.js')
+		robot = new imp(board)
+  	}
 }
 
 var uuid
 var available = true
+var secondsRemaining = 120
 
+//every second, publish remaining time on uuid
+function startControlTimer(){
+	winston.info('starting control timer')
+	countdown = setInterval(function() {
+		secondsRemaining = secondsRemaining-1
+		winston.info('seconds remaining ' + secondsRemaining)
+
+		socket.emit('message', {
+	  		type: 'seconds remaining',
+	  		uuid: uuid,
+	  		secondsRemaining: secondsRemaining,
+		})
+
+		if (secondsRemaining <= 0) {
+    		clearInterval(countdown);
+    		available = true
+    		secondsRemaining = 120
+  		}
+
+	}, 1000)
+}
+
+function handleRequest(message){
+	winston.info('handling request')
+	if(available) {
+		//grant request
+		available = false
+		uuid = message.uuid
+		socket.emit('message', {
+		  type: 'request ack',
+		  requestGranted: true,
+		  uuid: message.uuid,
+		})
+
+		startControlTimer()
+	}
+  	else {
+		socket.emit('message', {
+	  		type: 'request ack',
+	 		requestGranted: false,
+	  		uuid: message.uuid,
+		})
+  	}
+}
+
+function handleControls(message){
+	if (typeof robot.onGamepad === "function") {
+	 	robot.onGamepad(message.data);
+  	}
+}
+
+winston.info('socket')
 var socket = require('socket.io-client')('https://benolayinka.com');
 socket.on('connect', function(){
-  winston.info('websocket open!');
+  	winston.info('websocket open!');
 
-  //send join request to enter room for rover 
-  socket.emit('join', process.env.ROVER)
+  	//send join request to enter room for rover 
+  	socket.emit('join', process.env.ROVER)
 
-  //continue once we're in the room
-  socket.on('joined room', ()=>{
-    winston.info('joined room')
+  	//continue once we're in the room
+  	socket.on('joined room', ()=>{
+		winston.info('joined room')
 
-    socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
+		socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
 
-    socket.on('message', (message)=> {
-      winston.info('message received', message)
-      switch(message.type) {
-        case 'request':
-          if(available) {
-            //grant request
-            available = false
-            uuid = message.uuid
-            socket.emit('message', {
-              type: 'request ack',
-              requestGranted: true,
-              uuid: message.uuid,
-            })
-            setInterval(()=>{
-              available = true
-            }, 1000 * 60)
-          }
-          else {
-            socket.emit('message', {
-              type: 'request ack',
-              requestGranted: false,
-              uuid: message.uuid,
-            })
-          }
-          break;
-        case 'controls':
-          if (typeof robot.onGamepad === "function") {
-             robot.onGamepad(message.data);
-          }
-        default:
-          // code block
-        }
-    })
-  })
+		socket.on('message', (message)=> {
+	  		winston.info(message)
+	  		switch(message.type) {
+				case 'request':
+		  			handleRequest(message)
+		  			break
+				case 'controls':
+				  	handleControls(message)
+				  	break
+				default:
+		  			// code block
+			}
+		})
+  	})
 });
 
 
