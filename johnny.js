@@ -98,8 +98,8 @@ socket.on('connect', function(){
   	socket.emit('join', process.env.ROVER)
 
   	//continue once we're in the room
-  	socket.on('joined room', ()=>{
-		winston.info('joined room')
+  	socket.on('joined room', (room)=>{
+		winston.info('joined room: ' + room)
 
 		socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
 
