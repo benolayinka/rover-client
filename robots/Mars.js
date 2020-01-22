@@ -20,6 +20,7 @@ class Mars extends Robot{
     	super(board);
     	this.ready = false
     	this.board.on("ready", ()=>{
+        console.log('board ready')
 
     		this.ready = true
 

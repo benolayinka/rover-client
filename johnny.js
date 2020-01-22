@@ -10,9 +10,10 @@ winston.add(new winston.transports.Console({
 var robot = null;
 
 if(process.env.ROVER){
-  	var five = require("johnny-five");
 
-  	var board = new five.Board({
+  	const five = require("johnny-five");
+
+  	const board = new five.Board({
 		repl: false,
 		debug: true,
   	});
@@ -36,7 +37,8 @@ if(process.env.ROVER){
 
 var uuid
 var available = true
-var secondsRemaining = 120
+var secondsTotal = 30
+var secondsRemaining = secondsTotal
 
 //every second, publish remaining time on uuid
 function startControlTimer(){
@@ -54,7 +56,7 @@ function startControlTimer(){
 		if (secondsRemaining <= 0) {
     		clearInterval(countdown);
     		available = true
-    		secondsRemaining = 120
+    		secondsRemaining = secondsTotal
   		}
 
 	}, 1000)
