@@ -91,21 +91,17 @@ function handleControls(message){
   	}
 }
 
-winston.info('socket')
 var socket = require('socket.io-client')('https://benolayinka.com');
 socket.on('connect', function(){
   	winston.info('websocket open!');
 
+  	socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
+
   	//send join request to enter room for rover 
-  	socket.emit('join', process.env.ROVER)
+  	socket.emit('join', process.env.ROVER, function(response) {
+  		winston.info('join room response: ' + response)
 
-  	//continue once we're in the room
-  	socket.on('joined room', (room)=>{
-		winston.info('joined room: ' + room)
-
-		socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
-
-		socket.on('message', (message)=> {
+  		socket.on('message', (message)=> {
 	  		winston.info(message)
 	  		switch(message.type) {
 				case 'request':
@@ -118,6 +114,7 @@ socket.on('connect', function(){
 		  			// code block
 			}
 		})
+
   	})
 });
 
