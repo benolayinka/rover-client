@@ -34,7 +34,7 @@ if(process.env.ROVER){
 		robot = new imp(board)
   	}
 
-  	board.on('ready', robot.onReady)
+  	board.on('ready', ()=>robot.onReady())
 }
 
 var uuid
@@ -97,6 +97,7 @@ function handleRequest(message){
 function handleControls(message){
 	if(message.uuid === uuid || message.uuid === 'debug') {
 		if (typeof robot.onGamepad === "function") {
+			winston.info('controls!!')
 		 	robot.onGamepad(message.data);
 	  	}
 	}

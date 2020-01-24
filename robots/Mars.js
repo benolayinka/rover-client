@@ -95,10 +95,10 @@ class Mars extends Robot{
 
       this.onGamepad = (gamepadData)=>{
         if(gamepadData.leftJoystick)
-          this.leftJoystick(gamepadData.leftJoystick)
+          leftJoystick(gamepadData.leftJoystick)
 
         if(gamepadData.rightJoystick)
-          this.rightJoystick(gamepadData.rightJoystick)
+          rightJoystick(gamepadData.rightJoystick)
       }
 
       this.emergencyStop = ()=>{
