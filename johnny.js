@@ -33,17 +33,20 @@ if(process.env.ROVER){
 		const imp = require('./robots/' + process.env.ROVER + '.js')
 		robot = new imp(board)
   	}
+
+  	board.on('ready', robot.onReady)
 }
 
 var uuid
 var available = true
-var secondsTotal = 30
+var secondsTotal = 10
 var secondsRemaining = secondsTotal
 
 //every second, publish remaining time on uuid
 function startControlTimer(){
 	winston.info('starting control timer')
 	countdown = setInterval(function() {
+
 		secondsRemaining = secondsRemaining-1
 		winston.info('seconds remaining ' + secondsRemaining)
 
@@ -58,6 +61,8 @@ function startControlTimer(){
     		available = true
     		uuid = null
     		secondsRemaining = secondsTotal
+
+    		winston.info('stopping')
 
     		if (typeof robot.emergencyStop === "function") {
 			 	robot.emergencyStop();

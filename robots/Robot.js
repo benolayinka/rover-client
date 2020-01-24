@@ -3,15 +3,17 @@ class Robot {
 		this.board = board
 	}
 
-	onGamepad(gamepadData) {
-		//available
-		//leftStick.x/y
-		//rightStick.x/y
+	onReady() {
+		//create everything here
+		this.onGamepad = (gamepadData)=>{
+			//available
+			//leftStick.x/y
+			//rightStick.x/y
+		}
 
-	}
-
-	emergencyStop() {
-		//stop motors!
+		this.emergencyStop = () =>{
+			//stop motors!
+		}
 	}
 }
 
