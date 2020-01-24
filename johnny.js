@@ -39,7 +39,7 @@ if(process.env.ROVER){
 
 var uuid
 var available = true
-var secondsTotal = 10
+var secondsTotal = 30
 var secondsRemaining = secondsTotal
 
 //every second, publish remaining time on uuid
