@@ -56,9 +56,13 @@ function startControlTimer(){
 		if (secondsRemaining <= 0) {
     		clearInterval(countdown);
     		available = true
+    		uuid = null
     		secondsRemaining = secondsTotal
-  		}
 
+    		if (typeof robot.emergencyStop === "function") {
+			 	robot.emergencyStop();
+		  	}
+  		}
 	}, 1000)
 }
 
@@ -86,9 +90,11 @@ function handleRequest(message){
 }
 
 function handleControls(message){
-	if (typeof robot.onGamepad === "function") {
-	 	robot.onGamepad(message.data);
-  	}
+	if(message.uuid === uuid || message.uuid === 'debug') {
+		if (typeof robot.onGamepad === "function") {
+		 	robot.onGamepad(message.data);
+	  	}
+	}
 }
 
 var socket = require('socket.io-client')('https://benolayinka.com');
