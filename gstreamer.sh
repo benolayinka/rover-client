@@ -15,9 +15,9 @@ if [ "$VIDEO_ROTATION" -gt "0" ]
 	then v4l2-ctl --set-ctrl=rotate=$VIDEO_ROTATION
 fi
 
-v4l2-ctl --set-fmt-video=width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,pixelformat=4
-v4l2-ctl --overlay=1
-v4l2-ctl -p $VIDEO_FPS
+#v4l2-ctl --set-fmt-video=width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,pixelformat=4
+#v4l2-ctl --overlay=1
+#v4l2-ctl -p $VIDEO_FPS
 v4l2-ctl --set-ctrl scene_mode=8 #night mode
 v4l2-ctl --set-ctrl=video_bitrate=4000000 #or whatever
 
