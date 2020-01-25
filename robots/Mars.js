@@ -89,6 +89,8 @@ class Mars extends Robot{
         //straight ahead on tilt is 55, so we want 0 to be 55..
         y+=55
 
+        //the time and steps are experimental.
+        //default number of steps is 100? causes high cpu load
         this.servoTilt.to(y, 250, 20)
         this.servoPan.to(x, 250, 20)
       }      
