@@ -18,7 +18,8 @@ fi
 v4l2-ctl --set-fmt-video=width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,pixelformat=4
 v4l2-ctl --overlay=1
 v4l2-ctl -p $VIDEO_FPS
-v4l2-ctl --set-ctrl=video_bitrate=4000000 //or whatever
+v4l2-ctl --set-ctrl scene_mode=8 #night mode
+v4l2-ctl --set-ctrl=video_bitrate=4000000 #or whatever
 
 gst-launch-1.0 -v v4l2src \
 ! video/x-h264,width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,framerate=$VIDEO_FPS/1, profile=baseline \
