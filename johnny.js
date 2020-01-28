@@ -4,7 +4,7 @@ const winston = require('winston')
 //can add log file to transports.
 //to display all msgs to console, disable silent
 winston.add(new winston.transports.Console({
-  	silent: true 
+  	silent: false 
 }))
 
 var robot = null;
