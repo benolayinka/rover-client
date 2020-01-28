@@ -15,12 +15,17 @@ class Traxxas extends Robot{
 
     onReady(){
 
-      this.speedServo = new five.Servo({
-          pin: PIN_SPEED_SERVO,
-          pwmRange: [1000, 2000],
-          center: true,
-          //debug:true,
-        });
+      // this.speedServo = new five.Servo({
+      //     pin: PIN_SPEED_SERVO,
+      //     pwmRange: [1000, 2000],
+      //     center: true,
+      //     //debug:true,
+      //   });
+
+      this.esc = new five.ESC({
+        device: "FORWARD_REVERSE",   
+        pin: PIN_SPEED_SERVO, 
+      });
 
       this.steerServo = new five.Servo({
           pin: PIN_STEERING_SERVO,
@@ -34,15 +39,15 @@ class Traxxas extends Robot{
         let x = leftJoystickData.x
         let pwm = 0
 
-        //joystick data is -90 to 90, want positive ints
-        y+=90
-        this.speedServo.to(y)
-        console.log('setspeed to ', y)
+        // //joystick data is -90 to 90, want positive ints
+        // y+=90
+        // this.speedServo.to(y)
 
         //esc expects percentage
-        // let throttlePercent = y / 180 * 100;
-        // let throttleuS = 1000 + throttlePercent * 10
-        // this.esc.throttle(throttleuS)
+        y+=90
+        let throttlePercent = y / 180 * 100;
+        let throttleuS = 1000 + throttlePercent * 10
+        this.esc.throttle(throttleuS)
 
         //joystick data is -90 to 90, servo expects 0 to 180
         x+=90
@@ -51,11 +56,12 @@ class Traxxas extends Robot{
 
       this.onGamepad=(gamepadData)=>{
         if(gamepadData.leftJoystick)
-          this.leftJoystick(gamepadData.leftJoystick)
+          leftJoystick(gamepadData.leftJoystick)
       }
 
       this.emergencyStop=()=>{
-        this.speedServo.to(90)
+        //this.speedServo.to(90)
+        this.esc.brake()
       }
     }
 }
