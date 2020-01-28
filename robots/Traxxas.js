@@ -11,66 +11,53 @@ const SERVO_PWM_MAX=2000
 class Traxxas extends Robot{
 	constructor(board) {
     	super(board);
-    	this.ready = false
-    	this.board.on("ready", ()=>{
-
-    		this.ready = true
-
-        // this.esc = new five.ESC({
-        //   device: "FORWARD_REVERSE",   
-        //   pin: PIN_SPEED_SERVO, 
-        // });
-
-        this.speedServo = new five.Servo({
-            pin: PIN_SPEED_SERVO,
-            pwmRange: [1000, 2000],
-            center: true,
-            //debug:true,
-          });
-
-  			this.steerServo = new five.Servo({
-            pin: PIN_STEERING_SERVO,
-            pwmRange: [1000, 2000],
-            center: true,
-            //debug:true,
-          });
-        
-      	})
   	}
 
-  	leftJoystick(leftJoystickData) {
-  		let y = leftJoystickData.y
-  		let x = leftJoystickData.x
-  		let pwm = 0
+    onReady(){
 
-      //joystick data is -90 to 90, want positive ints
-      y+=90
-      this.speedServo.to(y)
-      console.log('setspeed to ', y)
+      this.speedServo = new five.Servo({
+          pin: PIN_SPEED_SERVO,
+          pwmRange: [1000, 2000],
+          center: true,
+          //debug:true,
+        });
 
-      //esc expects percentage
-      // let throttlePercent = y / 180 * 100;
-      // let throttleuS = 1000 + throttlePercent * 10
-      // this.esc.throttle(throttleuS)
+      this.steerServo = new five.Servo({
+          pin: PIN_STEERING_SERVO,
+          pwmRange: [1000, 2000],
+          center: true,
+          //debug:true,
+        });
 
-      //joystick data is -90 to 90, servo expects 0 to 180
-      x+=90
-      this.steerServo.to(x)
-  	}
+      let leftJoystick=(leftJoystickData)=>{
+        let y = leftJoystickData.y
+        let x = leftJoystickData.x
+        let pwm = 0
 
-  	onGamepad(gamepadData) {
-  		if(!this.ready)
-  			return
+        //joystick data is -90 to 90, want positive ints
+        y+=90
+        this.speedServo.to(y)
+        console.log('setspeed to ', y)
 
-      console.log('drivin')
+        //esc expects percentage
+        // let throttlePercent = y / 180 * 100;
+        // let throttleuS = 1000 + throttlePercent * 10
+        // this.esc.throttle(throttleuS)
 
-  		if(gamepadData.leftJoystick)
-  			this.leftJoystick(gamepadData.leftJoystick)
-  	}
+        //joystick data is -90 to 90, servo expects 0 to 180
+        x+=90
+        this.steerServo.to(x)
+      }
 
-  	emergencyStop() {
-  		this.esc.brake()
-  	}
+      this.onGamepad=(gamepadData)=>{
+        if(gamepadData.leftJoystick)
+          this.leftJoystick(gamepadData.leftJoystick)
+      }
+
+      this.emergencyStop=()=>{
+        this.speedServo.to(90)
+      }
+    }
 }
 
 module.exports = Traxxas
