@@ -96,8 +96,8 @@ class Mars extends Robot{
         //this.servoTilt.to(y, 25)
         //this.servoPan.to(x, 25)
 
-        //this.servoTilt.to(y)
-        //this.servoPan.to(x)
+        this.servoTilt.to(y)
+        this.servoPan.to(x)
       }      
 
       this.onGamepad = (gamepadData)=>{
