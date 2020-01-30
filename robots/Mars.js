@@ -93,10 +93,8 @@ class Mars extends Robot{
 
         //the time and steps are experimental.
         //default number of steps is 100? causes high cpu load
-        this.servoTilt.stop()
-        this.servoTilt.to(y, 250)
-        this.servoPan.stop()
-        this.servoPan.to(x, 250)
+        this.servoTilt.to(y)
+        this.servoPan.to(x)
 
         //this.servoTilt.to(y)
         //this.servoPan.to(x)
