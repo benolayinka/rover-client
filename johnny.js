@@ -34,7 +34,25 @@ if(process.env.ROVER){
 		robot = new imp(board)
   	}
 
-  	board.on('ready', ()=>robot.onReady())
+  	board.on('ready', ()=>{
+  		winston.info('board ready')
+  		robot.onReady()
+  	})
+
+  	board.on('disconnect', ()=>{
+  		winston.info('board disconnected!')
+  		process.exit(1)
+  	})
+
+  	board.on('error', ()=>{
+  		winston.info('board error!')
+  		process.exit(1)
+  	})
+
+  	board.on('close', ()=>{
+  		winston.info('board closed!')
+  		process.exit(1)
+  	})
 }
 
 var uuid
