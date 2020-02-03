@@ -65,27 +65,35 @@ function startControlTimer(){
 	winston.info('starting control timer')
 	countdown = setInterval(function() {
 
-		secondsRemaining = secondsRemaining-1
-		winston.info('seconds remaining ' + secondsRemaining)
+		if(available) {
 
-		socket.emit('message', {
-	  		type: 'seconds remaining',
-	  		uuid: uuid,
-	  		secondsRemaining: secondsRemaining,
-		})
+			socket.emit('message', {
+		  		type: 'available',
+			})
 
-		if (secondsRemaining <= 0) {
-    		clearInterval(countdown);
-    		available = true
-    		uuid = null
-    		secondsRemaining = secondsTotal
+		} else {
 
-    		winston.info('stopping')
+			secondsRemaining--
+			winston.info('seconds remaining ' + secondsRemaining)
 
-    		if (typeof robot.emergencyStop === "function") {
-			 	robot.emergencyStop();
-		  	}
-  		}
+			socket.emit('message', {
+		  		type: 'seconds remaining',
+		  		uuid: uuid,
+		  		secondsRemaining: secondsRemaining,
+			})
+
+			if (secondsRemaining <= 0) {
+	    		available = true
+	    		uuid = null
+	    		secondsRemaining = secondsTotal
+
+	    		winston.info('stopping')
+
+	    		if (typeof robot.emergencyStop === "function") {
+				 	robot.emergencyStop();
+			  	}
+	  		}
+		}
 	}, 1000)
 }
 
@@ -100,8 +108,6 @@ function handleRequest(message){
 		  requestGranted: true,
 		  uuid: message.uuid,
 		})
-
-		startControlTimer()
 	}
   	else {
 		socket.emit('message', {
@@ -121,7 +127,7 @@ function handleControls(message){
 	}
 }
 
-var socket = require('socket.io-client')('https://benolayinka.com');
+var socket = require('socket.io-client')('https://' + process.env.APP_HOSTNAME);
 socket.on('connect', function(){
   	winston.info('websocket open!');
 
@@ -130,6 +136,8 @@ socket.on('connect', function(){
   	//send join request to enter room for rover 
   	socket.emit('join', process.env.ROVER, function(response) {
   		winston.info('join room response: ' + response)
+
+  		startControlTimer()
 
   		socket.on('message', (message)=> {
 	  		winston.info(message)
@@ -141,7 +149,7 @@ socket.on('connect', function(){
 				  	handleControls(message)
 				  	break
 				default:
-		  			// code block
+					break
 			}
 		})
 
