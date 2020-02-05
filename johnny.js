@@ -129,7 +129,8 @@ function handleControls(message){
 
 var socket = require('socket.io-client')('https://' + process.env.APP_HOSTNAME);
 socket.on('connect', function(){
-  	winston.info('websocket open!');
+
+	winston.info('websocket open!');
 
   	socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
 
@@ -138,6 +139,10 @@ socket.on('connect', function(){
   		winston.info('join room response: ' + response)
 
   		startControlTimer()
+
+  		socket.on('disconnect', (reason) => {
+	  		socket.off('message');
+		});
 
   		socket.on('message', (message)=> {
 	  		winston.info(message)
