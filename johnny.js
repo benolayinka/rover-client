@@ -60,9 +60,17 @@ var available = true
 var secondsTotal = 30
 var secondsRemaining = secondsTotal
 
+var timerActive = false
+
 //every second, publish remaining time on uuid
 function startControlTimer(){
+
+	if(timerActive) return
+
+	timerActive = true
+
 	winston.info('starting control timer')
+
 	countdown = setInterval(function() {
 
 		if(available) {
@@ -128,6 +136,7 @@ function handleControls(message){
 }
 
 var socket = require('socket.io-client')('https://' + process.env.APP_HOSTNAME);
+
 socket.on('connect', function(){
 
 	winston.info('websocket open!');
@@ -139,26 +148,23 @@ socket.on('connect', function(){
   		winston.info('join room response: ' + response)
 
   		startControlTimer()
-
-  		socket.on('disconnect', (reason) => {
-	  		socket.off('message');
-		});
-
-  		socket.on('message', (message)=> {
-	  		winston.info(message)
-	  		switch(message.type) {
-				case 'request':
-		  			handleRequest(message)
-		  			break
-				case 'controls':
-				  	handleControls(message)
-				  	break
-				default:
-					break
-			}
-		})
-
   	})
 });
+
+socket.on('message', (message)=> {
+
+	winston.info(message)
+
+	switch(message.type) {
+		case 'request':
+			handleRequest(message)
+			break
+		case 'controls':
+		  	handleControls(message)
+		  	break
+		default:
+			break
+	}
+})
 
 
