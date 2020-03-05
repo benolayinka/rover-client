@@ -106,6 +106,56 @@ class Mars extends Robot{
 
         if(gamepadData.rightJoystick)
           rightJoystick(gamepadData.rightJoystick)
+
+        //new gamepad
+        var moveY,moveX, lookX, lookY
+        moveY = moveX = lookY = lookX = 0
+
+        const range = 90
+
+        //back, or key s = 83
+        if(gamepadData.buttonsPressed[0] || gamepadData.keysPressed['83'])
+            moveY -= range
+
+        //forward, button 1 or key w = 87
+        if(gamepadData.buttonsPressed[1] || gamepadData.keysPressed['87'])
+            moveY += range
+
+        //right, or key d = 68
+        if(gamepadData.keysPressed['68'])
+            moveX += range
+
+        //left, or key a = 65
+        if(gamepadData.keysPressed['65'])
+            moveX -= range
+
+        //lookUp, i = 73
+        if(gamepadData.keysPressed['73'])
+            lookY += range
+
+        //lookLeft, j=74
+        if(gamepadData.keysPressed['74'])
+            lookX -= range
+
+        //lookDown, k=75
+        if(gamepadData.keysPressed['75'])
+            lookY -= range
+        
+        //lookRight l=76
+        if(gamepadData.keysPressed['76'])
+            lookX += range
+
+        if(gamepadData.buttonsPressed[2]){
+            //joystick is look
+            lookX += gamepadData.joystickData.x
+            lookY += gamepadData.joystickData.y
+        } else {
+            moveX += gamepadData.joystickData.x
+            moveY += gamepadData.joystickData.y
+        }
+
+        leftJoystick({x:moveX, y:moveY})
+        rightJoystick({x:lookX, y:lookY})
       }
 
       this.emergencyStop = ()=>{

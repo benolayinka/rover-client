@@ -27,7 +27,7 @@ if(process.env.ROVER){
   	}
   	catch(e) {
 		if (e.code !== 'MODULE_NOT_FOUND') {
-			// Re-throw not "Module not found" errors 
+			// Re-throw other errors 
 			throw e;
 		}
 		const imp = require('./robots/' + process.env.ROVER + '.js')
@@ -55,6 +55,7 @@ if(process.env.ROVER){
   	})
 }
 
+//exclusive control data
 var uuid
 var available = true
 var secondsTotal = 30
@@ -127,7 +128,7 @@ function handleRequest(message){
 }
 
 function handleControls(message){
-	if(message.uuid === uuid || message.uuid === 'debug') {
+	if(available || message.uuid === uuid || message.uuid === 'debug') {
 		if (typeof robot.onGamepad === "function") {
 			winston.info('controls!!')
 		 	robot.onGamepad(message.data);
@@ -142,11 +143,12 @@ socket.on('connect', function(){
 	winston.info('websocket open!');
 
   	socket.emit('robot connected', {robot: process.env.ROVER, video_port: process.env.VIDEO_PORT})
-
+  	
   	//send join request to enter room for rover 
   	socket.emit('join', process.env.ROVER, function(response) {
+  		
   		winston.info('join room response: ' + response)
-
+  		
   		startControlTimer()
   	})
 });
