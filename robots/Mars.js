@@ -145,14 +145,10 @@ class Mars extends Robot{
         if(gamepadData.keysPressed['76'])
             lookX += range
 
-        if(gamepadData.buttonsPressed[2]){
-            //joystick is look
-            lookX += gamepadData.joystickData.x
-            lookY += gamepadData.joystickData.y
-        } else {
-            moveX += gamepadData.joystickData.x
-            moveY += gamepadData.joystickData.y
-        }
+        lookX += gamepadData.lookJoystickData.x
+        lookY += gamepadData.lookJoystickData.y
+        moveX += gamepadData.driveJoystickData.x
+        moveY += gamepadData.driveJoystickData.y
 
         leftJoystick({x:moveX, y:moveY})
         rightJoystick({x:lookX, y:lookY})
