@@ -103,7 +103,9 @@ function handleRequest(message){
 }
 
 function handleControls(message){
+	winston.info('handling controls')
 	if(available || message.uuid === uuid || message.uuid === 'debug') {
+		winston.info('controls available')
 		if (typeof robot.onGamepad === "function") {
 			winston.info('controls!!')
 		 	robot.onGamepad(message.data);
