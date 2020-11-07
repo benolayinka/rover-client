@@ -24,6 +24,9 @@ v4l2-ctl --set-ctrl=video_bitrate=4000000 #or whatever
 v4l2-ctl --set-ctrl=brightness=55
 
 #h264parse seems to affect stream stability in janus. also sets profile=high
+#config interval apparently sends sps frames which allow resuming video
+#payload type 96 should be h264
+#sync=false fixed latency accum on pi zero
 gst-launch-1.0 -v v4l2src \
 ! video/x-h264,width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,framerate=$VIDEO_FPS/1, profile=high \
 ! h264parse ! rtph264pay config-interval=1 pt=96 \
