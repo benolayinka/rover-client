@@ -2,10 +2,12 @@ const Robot = require('./Robot.js')
 const Raspi = require('raspi-io').RaspiIO;
 const {Board, Motor} = require("johnny-five");
 
-const PIN_LEFT_MOTOR_SPEED=0
-const PIN_RIGHT_MOTOR_SPEED=5
-const PIN_LEFT_MOTOR_DIRECTION=1
-const PIN_RIGHT_MOTOR_DIRECTION=3
+const PIN_LEFT_MOTOR_SPEED=5
+const PIN_LEFT_MOTOR_DIRECTION=3
+const PIN_LEFT_MOTOR_C_DIRECTION=4
+const PIN_RIGHT_MOTOR_SPEED=0
+const PIN_RIGHT_MOTOR_DIRECTION=1
+const PIN_RIGHT_MOTOR_C_DIRECTION=2
 const MOTOR_MAX=255
 
 class Pca extends Robot{
@@ -23,7 +25,8 @@ class Pca extends Robot{
     this.motorRight = new Motor({
         pins: {
           pwm: PIN_RIGHT_MOTOR_SPEED,
-          dir: PIN_RIGHT_MOTOR_DIRECTION
+          dir: PIN_RIGHT_MOTOR_DIRECTION,
+          cdir: PIN_RIGHT_MOTOR_C_DIRECTION
         },
         controller: "PCA9685",
         address: 0x40
@@ -32,7 +35,8 @@ class Pca extends Robot{
     this.motorLeft = new Motor({
         pins: {
           pwm: PIN_LEFT_MOTOR_SPEED,
-          dir: PIN_LEFT_MOTOR_DIRECTION
+          dir: PIN_LEFT_MOTOR_DIRECTION,
+          cdir: PIN_LEFT_MOTOR_C_DIRECTION
         },
         controller: "PCA9685",
         address: 0x40
