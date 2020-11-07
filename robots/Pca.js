@@ -26,6 +26,7 @@ class Pca extends Robot{
         pins: {
           pwm: PIN_RIGHT_MOTOR_SPEED,
           dir: PIN_RIGHT_MOTOR_DIRECTION,
+          cdir: PIN_RIGHT_MOTOR_C_DIRECTION
         },
         controller: "PCA9685",
         address: 0x40
@@ -35,6 +36,7 @@ class Pca extends Robot{
         pins: {
           pwm: PIN_LEFT_MOTOR_SPEED,
           dir: PIN_LEFT_MOTOR_DIRECTION,
+          cdir: PIN_LEFT_MOTOR_C_DIRECTION
         },
         controller: "PCA9685",
         address: 0x40

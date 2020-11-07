@@ -13,16 +13,9 @@ const board = new Board({
 board.on("ready", () => {
   // Create a new `motor` hardware instance.
   const motor = new Motor({
-    pins: {pwm:0, dir:1},
+    pins: {pwm:0, dir:1, cdir: 2},
     controller: "PCA9685",
     address: 0x40
-  });
-
-  // Inject the `motor` hardware into
-  // the Repl instance's context;
-  // allows direct command line access
-  board.repl.inject({
-    motor
   });
 
   // Motor Event API
