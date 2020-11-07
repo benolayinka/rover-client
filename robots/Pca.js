@@ -17,7 +17,7 @@ class Pca extends Robot{
       io: new Raspi()
     });
 
-    board.on('ready', this.onReady)
+    this.onReady()
   }
 
   //define everything here, so we don't crash on no board
