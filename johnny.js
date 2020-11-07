@@ -10,49 +10,11 @@ winston.add(new winston.transports.Console({
 var robot = null;
 
 if(process.env.ROVER){
-
-  	const five = require("johnny-five");
-
-  	const board = new five.Board({
-		repl: false,
-		debug: true,
-  	});
-
-  	try {
-		function capitalizeFirstLetter(string) {
-		  return string.charAt(0).toUpperCase() + string.slice(1);
-		}
-		const imp = require('./robots/' + capitalizeFirstLetter(process.env.ROVER) + '.js')
-		robot = new imp(board)
-  	}
-  	catch(e) {
-		if (e.code !== 'MODULE_NOT_FOUND') {
-			// Re-throw other errors 
-			throw e;
-		}
-		const imp = require('./robots/' + process.env.ROVER + '.js')
-		robot = new imp(board)
-  	}
-
-  	board.on('ready', ()=>{
-  		winston.info('board ready')
-  		robot.onReady()
-  	})
-
-  	board.on('disconnect', ()=>{
-  		winston.info('board disconnected!')
-  		process.exit(1)
-  	})
-
-  	board.on('error', ()=>{
-  		winston.info('board error!')
-  		process.exit(1)
-  	})
-
-  	board.on('close', ()=>{
-  		winston.info('board closed!')
-  		process.exit(1)
-  	})
+	function capitalizeFirstLetter(string) {
+	  return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+	const imp = require('./robots/' + capitalizeFirstLetter(process.env.ROVER) + '.js')
+	robot = new imp()
 }
 
 //exclusive control data
@@ -106,6 +68,19 @@ function startControlTimer(){
 	}, 1000)
 }
 
+function handleMessage(message){
+	switch(message.type) {
+		case 'request':
+			handleRequest(message)
+			break
+		case 'controls':
+		  	handleControls(message)
+		  	break
+		default:
+			break
+	}
+}
+
 function handleRequest(message){
 	winston.info('handling request')
 	if(available) {
@@ -157,16 +132,7 @@ socket.on('message', (message)=> {
 
 	winston.info(message)
 
-	switch(message.type) {
-		case 'request':
-			handleRequest(message)
-			break
-		case 'controls':
-		  	handleControls(message)
-		  	break
-		default:
-			break
-	}
+	handleMessage(message)
 })
 
 

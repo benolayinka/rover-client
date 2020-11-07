@@ -16,9 +16,15 @@ const PIN_RIGHT_MOTOR_DIRECTION=7
 const MOTOR_MAX=255
 
 class Mars extends Robot{
-	constructor(board) {
-    	super(board);
-  	}
+	constructor() {
+    super()
+    var board = this.board = new five.Board({
+      repl: false,
+      debug: true,
+     });
+
+    board.on('ready', this.onReady)
+  }
 
     //define everything here, so we don't crash on no board
     onReady(){

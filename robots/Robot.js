@@ -1,6 +1,5 @@
 class Robot {
-	constructor(board) {
-		this.board = board
+	constructor() {
 	}
 
 	onReady() {
