@@ -5,10 +5,13 @@ const PIN_RIGHT_MOTOR_SPEED=9
 const PIN_LEFT_MOTOR_DIRECTION=8
 const PIN_RIGHT_MOTOR_DIRECTION=7
 const PIN_LED=13
+const BAT_PIN="A0"
 
 const board = new five.Board()
 
 board.on('ready', ()=>{
+
+	bat = new five.Sensor(BAT_PIN);
 
 	led = new five.Led(PIN_LED)
 
@@ -28,6 +31,7 @@ board.on('ready', ()=>{
 
 	board.repl.inject({
 		led,
+		bat,
 		motorLeft,
 		motorRight,
 	});
