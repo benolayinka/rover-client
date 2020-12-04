@@ -7,6 +7,7 @@ const PIN_RIGHT_MOTOR_SPEED=9
 const PIN_LEFT_MOTOR_DIRECTION=8
 const PIN_RIGHT_MOTOR_DIRECTION=7
 const MOTOR_MAX=255
+const MOTOR_SCALE=0.5
 
 class Zumo extends Robot{
     constructor() {
@@ -51,7 +52,7 @@ class Zumo extends Robot{
 
         //motorRight
         this.motorRight.angle = y - x
-        pwm = this.motorRight.angle * (255/90)
+        pwm = this.motorRight.angle * (255/90) * MOTOR_SCALE
         pwm = Math.round(pwm)
         pwm = Math.min(pwm, MOTOR_MAX)
         pwm = Math.max(pwm, -MOTOR_MAX)
@@ -59,7 +60,7 @@ class Zumo extends Robot{
 
         //motorLeft
         this.motorLeft.angle = y + x
-        pwm = this.motorLeft.angle * (255/90)
+        pwm = this.motorLeft.angle * (255/90) * MOTOR_SCALE
         pwm = Math.min(pwm, MOTOR_MAX)
         pwm = Math.max(pwm, -MOTOR_MAX)
         pwm = Math.round(pwm)
