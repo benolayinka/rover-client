@@ -11,9 +11,7 @@ echo "$APP_HOSTNAME"
 echo "PORT = "
 echo "$VIDEO_PORT"
 
-if [ "$VIDEO_ROTATION" -gt "0" ]
-	then v4l2-ctl --set-ctrl=rotate=$VIDEO_ROTATION
-fi
+v4l2-ctl --set-ctrl=rotate=$VIDEO_ROTATION
 
 #tested framerate and resolution, they are set by gst anyway
 #v4l2-ctl --set-fmt-video=width=$VIDEO_WIDTH,height=$VIDEO_HEIGHT,pixelformat=4
