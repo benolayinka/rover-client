@@ -16,7 +16,7 @@
     "raspi": "^6.0.1",
     "raspi-io": "^11.0.0",
     "serialport": "^9.0.1",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "winston": "^3.2.1",
     "ws": "^7.2.0"
   }
