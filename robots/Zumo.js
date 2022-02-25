@@ -7,7 +7,7 @@ const PIN_RIGHT_MOTOR_SPEED=9
 const PIN_LEFT_MOTOR_DIRECTION=8
 const PIN_RIGHT_MOTOR_DIRECTION=7
 const MOTOR_MAX=255
-const MOTOR_SCALE=0.35
+const MOTOR_SCALE=1
 
 class Zumo extends Robot{
     constructor() {
